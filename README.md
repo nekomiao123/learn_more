@@ -1,4 +1,9 @@
 # learn more
+
+## basic
+
+- [Deep Learning Specialization](https://www.deeplearning.ai/program/deep-learning-specialization/)
+
 ## learn more course 
 
 - [李宏毅ML2021](https://speech.ee.ntu.edu.tw/~hylee/ml/2021-spring.html)
