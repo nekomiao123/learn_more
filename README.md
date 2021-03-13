@@ -18,7 +18,7 @@
 
 参考 https://www.zhihu.com/question/23372616
 
-**推荐学习顺序：**Math 54 + EE 16A（仅线性代数部分，可以跳过电路）-> Math 110 + EE 16B + CS 70 -> CS 189 -> EECS 126 + EECS 127 -> CS 182
+推荐学习顺序：Math 54 + EE 16A（仅线性代数部分，可以跳过电路）-> Math 110 + EE 16B + CS 70 -> CS 189 -> EECS 126 + EECS 127 -> CS 182
 
 > From my perspective as someone who teaches 189, the following makes the most sense 
 > 1) If you have taken 16AB and 110, and have strong vector calculus, the single most important course to prepare for 189 is 126. This continues to hold as long as you have taken 16AB and do not have have some weakness in vector calculus or linear algebra. Being able to reason probabilistically and have intuition about it is very important. 70 is not really enough. 
