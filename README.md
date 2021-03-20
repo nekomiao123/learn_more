@@ -9,6 +9,8 @@
 - [李宏毅ML2021](https://speech.ee.ntu.edu.tw/~hylee/ml/2021-spring.html)
 - [Berkeley full stack deep learning 2021](https://fullstackdeeplearning.com)
 - [Deep Learning for Computer Vision 2019](https://web.eecs.umich.edu/~justincj/teaching/eecs498/FA2020/)
+- [CS182 Designing, Visualizing and Understanding Deep Neural Networks](https://cs182sp21.github.io/)
+- [Analyses of Deep Learning (STATS 385)](https://stats385.github.io/)
 
 ## learn more books
 
@@ -30,4 +32,18 @@
 > I understand that the fashionable name and interesting subject matter of 189 is appealing, but when you're seven weeks into the course, trust me, no amount of fashionability is going to help you out or even make you feel any better. Understanding probability and optimization well will.
 
 - [CS 189 Introduction to Machine Learning](https://people.eecs.berkeley.edu/~jrs/189/)
+
+**线性代数：**Math 54 + EE 16A -> Math 110 + EE 16B -> CS 189
+
+Math 54和110就是初级和高级线性代数，注重理论和证明，EE 16A/B是电子工程的基础课，课程会要求你大量应用线性代数的性质去解决电路/系统问题。
+
+**概率：**CS 70 (+ Stat 134/135) -> CS 189
+
+CS 70的后半部分包括了一些概率，有教授和同学认为这个知识不太够，所以可以通过Stat 134/135来训练一下，但是统计的课程更加注重理论和证明，所以还是会有一些差距。
+
+**EECS 126：**概率的应用，听说会讨论Google初期的Page Rank。
+
+**EECS 127：**优化模型，对于掌握线性代数的应用很有帮助。
+
+文中教授建议先上这两门课再进入CS 189，因为这两门课更加基础而纯粹，没有将线性代数和概率结合在一起；但是身边的同学反应这个操作难度有点大，还是建议先上189再进入126/127进一步加强机器学习的能力。
 
