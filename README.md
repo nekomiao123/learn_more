@@ -14,7 +14,7 @@
 
 ## learn more books
 
-- [Dive into Deep Learning](https://d2l.ai/index.html)
+- [Dive into Deep Learning](https://d2l.ai/index.html) and [配套直播课](https://courses.d2l.ai/zh-v2/)
 
 ## 关于Berkeley的学习顺序
 
