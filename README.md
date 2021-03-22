@@ -18,6 +18,10 @@
 
 # learn more (Others)
 
+## basic SICP
+
+- [CS 61A 2020 Fall](https://inst.eecs.berkeley.edu/~cs61a/fa20/)
+
 ## data Structure
 
 - [CS 61B](https://sp21.datastructur.es/)
