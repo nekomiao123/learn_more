@@ -13,9 +13,9 @@ def a_plus_abs_b(a, b):
     ['return f(a, b)']
     """
     if b < 0:
-        f = -b
+        f = sub
     else:
-        f = b
+        f = add
     return f(a, b)
 
 
@@ -37,7 +37,7 @@ def two_of_three(x, y, z):
     >>> [type(x).__name__ for x in ast.parse(inspect.getsource(two_of_three)).body[0].body]
     ['Expr', 'Return']
     """
-    return _____
+    return x*x + y*y + z*z - max(x,y,z)*max(x,y,z)
 
 
 def largest_factor(n):
@@ -51,6 +51,13 @@ def largest_factor(n):
     1
     """
     "*** YOUR CODE HERE ***"
+    L_factor = 0
+    record = []
+    for i in range(1,n):
+        if n % i == 0:
+            record.append(i)
+    L_factor = max(record)
+    return L_factor
 
 
 def if_function(condition, true_result, false_result):
