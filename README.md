@@ -21,6 +21,7 @@
 ## basic SICP
 
 - [CS 61A 2020 Fall](https://inst.eecs.berkeley.edu/~cs61a/fa20/)
+- [CS 61A 2021 spring](https://cs61a.org)
 
 ## data Structure
 
