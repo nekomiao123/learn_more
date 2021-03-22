@@ -24,6 +24,12 @@
 
 ## 关于Berkeley的学习顺序
 
+[Berkeley EECS的大部分课程](https://inst.eecs.berkeley.edu//classes-eecs.html)
+
+![course-map-2019-da79ecbe2fc25e6b6349b8931364890032b8d51aacaccea65151ae98316f0587](https://cdn.jsdelivr.net/gh/nekomiao123/pic/img/course-map-2019-da79ecbe2fc25e6b6349b8931364890032b8d51aacaccea65151ae98316f0587.png)
+
+
+
 参考 https://www.zhihu.com/question/23372616
 
 推荐学习顺序：Math 54 + EE 16A（仅线性代数部分，可以跳过电路）-> Math 110 + EE 16B + CS 70 -> CS 189 -> EECS 126 + EECS 127 -> CS 182
