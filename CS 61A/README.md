@@ -14,3 +14,17 @@ Discussion: important
 
 Onlie textbook: http://composingprograms.com
 
+中文版:https://wizardforcel.gitbooks.io/sicp-py/content/1.1.html
+
+一位老哥的笔记:https://github.com/chenyuxiang0425/CS-Notes
+
+最后还是决定直接学习2020fall的课程
+
+## 具体学习时间记录
+
+2021/3/22
+
+开始学习CS61A，看完了Intro和第一章Functions的课程。好家伙，一来就整函数式编程，直接给我这个以前没碰过的人干蒙了，还有那个frame也让我理解了好一会儿。这课的Q&A挺值得听的。
+
+
+
