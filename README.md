@@ -7,7 +7,9 @@
 ## learn more course 
 
 - [李宏毅ML2021](https://speech.ee.ntu.edu.tw/~hylee/ml/2021-spring.html)
+- [李宏毅ML2020 内容非常多](https://speech.ee.ntu.edu.tw/~hylee/ml/2020-spring.html)
 - [Berkeley full stack deep learning 2021](https://fullstackdeeplearning.com)
+- [CS294-158-SP20 Deep Unsupervised Learning -- UC Berkeley, Spring 2020](https://sites.google.com/view/berkeley-cs294-158-sp20/home)
 - [Deep Learning for Computer Vision 2019](https://web.eecs.umich.edu/~justincj/teaching/eecs498/FA2020/)
 - [CS182 Designing, Visualizing and Understanding Deep Neural Networks](https://cs182sp21.github.io/)
 - [Analyses of Deep Learning (STATS 385)](https://stats385.github.io/)
