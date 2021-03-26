@@ -4,7 +4,7 @@
 
 这第一个作业是关于classification的
 
-- hw2_train.py 是我修改的能直接运行的python文件
+- my_hw2_train.py 是我修改的能直接运行的python文件
 
 - MLSpring2021_HW2_1.ipynb 是jupyter运行的文件
 
