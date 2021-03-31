@@ -2,21 +2,42 @@
 
 ## basic
 
+about math
+
+- [convex optimization](https://www.edx.org/course/convex-optimization)
+- [linear algebra by 3Blue1Brown](https://www.bilibili.com/video/av6731067?p=1&share_medium=android&share_source=copy_link&bbid=PgppX2ZRaAtpWz9bJ1sninfoc&ts=1552297488727)
+- [linear algebra by Strang](https://ocw.mit.edu/resources/res-18-010-a-2020-vision-of-linear-algebra-spring-2020/videos/a-new-way-to-start-linear-algebra/)
+
+about deep learning
+
 - [Deep Learning Specialization](https://www.deeplearning.ai/program/deep-learning-specialization/)
 
-## learn more course 
+## advanced
+
+### course
 
 - [李宏毅ML2021](https://speech.ee.ntu.edu.tw/~hylee/ml/2021-spring.html)
 - [李宏毅ML2020 内容非常多](https://speech.ee.ntu.edu.tw/~hylee/ml/2020-spring.html)
 - [Berkeley full stack deep learning 2021](https://fullstackdeeplearning.com)
 - [CS294-158-SP20 Deep Unsupervised Learning -- UC Berkeley, Spring 2020](https://sites.google.com/view/berkeley-cs294-158-sp20/home)
-- [Deep Learning for Computer Vision 2019](https://web.eecs.umich.edu/~justincj/teaching/eecs498/FA2020/)
 - [CS182 Designing, Visualizing and Understanding Deep Neural Networks](https://cs182sp21.github.io/)
 - [Analyses of Deep Learning (STATS 385)](https://stats385.github.io/)
 
-## learn more books
+### books
 
 - [Dive into Deep Learning](https://d2l.ai/index.html) and [配套直播课](https://courses.d2l.ai/zh-v2/)
+
+## computer vision
+
+### course
+
+- [Deep Learning for Computer Vision 2019](https://web.eecs.umich.edu/~justincj/teaching/eecs498/FA2020/)
+
+- [Deep Learning for Computer Vision Fall 2020](https://web.eecs.umich.edu/~justincj/teaching/eecs498/FA2020/schedule.html)
+
+### books
+
+- [Computer Vision: Algorithms and Applications, 2nd ed.](https://szeliski.org/Book)
 
 # learn more (Others)
 
