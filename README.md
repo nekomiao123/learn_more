@@ -11,6 +11,7 @@ about math
 about deep learning
 
 - [Deep Learning Specialization](https://www.deeplearning.ai/program/deep-learning-specialization/)
+- [Deep Learning Specialization notes](https://github.com/fengdu78/deeplearning_ai_books)
 
 ## advanced
 
