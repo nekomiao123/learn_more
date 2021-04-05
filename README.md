@@ -18,12 +18,12 @@ about deep learning
 ### course
 
 - [Introduction to Deep Learning](http://introtodeeplearning.com)
-
 - [李宏毅ML2021](https://speech.ee.ntu.edu.tw/~hylee/ml/2021-spring.html)
 - [李宏毅ML2020 内容非常多](https://speech.ee.ntu.edu.tw/~hylee/ml/2020-spring.html)
 - [Berkeley full stack deep learning 2021](https://fullstackdeeplearning.com)
 - [CS294-158-SP20 Deep Unsupervised Learning -- UC Berkeley, Spring 2020](https://sites.google.com/view/berkeley-cs294-158-sp20/home)
 - [CS182 Designing, Visualizing and Understanding Deep Neural Networks](https://cs182sp21.github.io/)
+- [CS182 Designing, Visualizing and Understanding Deep Neural Networks videos](https://www.youtube.com/watch?v=6dLIH0DBZiM&list=PLuv1FSpHurUevSXe_k0S7Onh6ruL-_NNh&index=1)
 - [Analyses of Deep Learning (STATS 385)](https://stats385.github.io/)
 
 ### books
