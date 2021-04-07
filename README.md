@@ -25,6 +25,8 @@ about deep learning
 - [CS182 Designing, Visualizing and Understanding Deep Neural Networks](https://cs182sp21.github.io/)
 - [CS182 Designing, Visualizing and Understanding Deep Neural Networks videos](https://www.youtube.com/watch?v=6dLIH0DBZiM&list=PLuv1FSpHurUevSXe_k0S7Onh6ruL-_NNh&index=1)
 - [Analyses of Deep Learning (STATS 385)](https://stats385.github.io/)
+- [NYU Deep Learning 2020](https://atcold.github.io/pytorch-Deep-Learning/zh/)
+- [NYU Deep Learning 2021 video](https://www.youtube.com/watch?v=EyKiYVwrdjE&list=PLLHTzKZzVU9e6xUfG10TkTWApKSZCzuBI&index=1)
 
 ### books
 
