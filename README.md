@@ -27,6 +27,7 @@ about deep learning
 - [Analyses of Deep Learning (STATS 385)](https://stats385.github.io/)
 - [NYU Deep Learning 2020](https://atcold.github.io/pytorch-Deep-Learning/zh/)
 - [NYU Deep Learning 2021 video](https://www.youtube.com/watch?v=EyKiYVwrdjE&list=PLLHTzKZzVU9e6xUfG10TkTWApKSZCzuBI&index=1)
+- [Stanford EE104 Introduction to Machine Learning](http://ee104.stanford.edu)
 
 ### books
 
