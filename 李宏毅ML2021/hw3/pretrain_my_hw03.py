@@ -29,8 +29,6 @@ I just change the .ipynb to .py file.
 """
 
 # Import necessary packages.
-import os
-import math
 import numpy as np
 import torch
 import torch.nn as nn
@@ -39,47 +37,22 @@ from PIL import Image
 # "ConcatDataset" and "Subset" are possibly useful when doing semi-supervised learning.
 from torch.utils.data import ConcatDataset, DataLoader, Subset
 from torchvision.datasets import DatasetFolder
-from torch.utils.data import Dataset
 import torchvision.models as models
 # This is for the progress bar.
 from tqdm import tqdm
 
-# tensorboard
-from torch.utils.tensorboard import SummaryWriter
-
 # Specify the graphics card
-torch.cuda.set_device(3)
+torch.cuda.set_device(4)
 
 # hyper-parameters 
 config = {
-    'learning_rate': 0.0003,       # learning rate
-    'batch_size': 32,
-    'num_epoch': 200,
-    'above_epoch': 0,    
-    'weight_decay': 1e-4,
-    'model_name': 'vgg',
-    'model_path': './train_model/vgg_11_model.ckpt',
-    'warm_up_epochs': 5
+    'learning_rate': 0.0001,       # learning rate
+    'batch_size': 64,
+    'num_epoch': 20,
+    'val_ratio': 0.2,       
+    'model_path': './pretrain_model/model.ckpt',
+    'weight_decay': 1e-5
 }
-
-saveFileName = config['model_name'] + '_predict.csv'
-comment = '_' + config['model_name'] + '_32_schedule_warm_up'
-writer = SummaryWriter(comment=comment)
-
-class UlabelDataset(Dataset):
-    def __init__(self, data, label):
-        self.data = data
-        self.label = label
-        self.length = len(data)
-
-    def __getitem__(self, idx):
-        label = self.label[idx]
-        data = self.data[idx]
-        return data, label
-
-    def __len__(self):
-        return self.length
-
 
 class Classifier(nn.Module):
     def __init__(self):
@@ -134,8 +107,7 @@ def set_parameter_requires_grad(model, feature_extracting):
         for param in model.parameters():
             param.requires_grad = False
 
-
-def initialize_model(num_classes, model_name=config['model_name'], feature_extract = False, use_pretrained=False):
+def initialize_model(model_name, num_classes, feature_extract, use_pretrained=True):
     # 选择合适的模型，不同模型的初始化方法稍微有点区别
     model_ft = None
     input_size = 0
@@ -155,20 +127,16 @@ def initialize_model(num_classes, model_name=config['model_name'], feature_extra
         model_ft = models.alexnet(pretrained=use_pretrained)
         set_parameter_requires_grad(model_ft, feature_extract)
         num_ftrs = model_ft.classifier[6].in_features
-        model_ft.classifier[6] = nn.Sequential(
-            nn.Dropout(0.5),
-            nn.Linear(num_ftrs,num_classes))
+        model_ft.classifier[6] = nn.Linear(num_ftrs,num_classes)
         input_size = 224
 
     elif model_name == "vgg":
         """ VGG11_bn
         """
-        model_ft = models.vgg11_bn(pretrained=use_pretrained)
+        model_ft = models.vgg16(pretrained=use_pretrained)
         set_parameter_requires_grad(model_ft, feature_extract)
         num_ftrs = model_ft.classifier[6].in_features
-        model_ft.classifier[6] = nn.Sequential(
-            nn.Dropout(0.5),
-            nn.Linear(num_ftrs,num_classes))
+        model_ft.classifier[6] = nn.Linear(num_ftrs,num_classes)
         input_size = 224
 
     elif model_name == "squeezenet":
@@ -217,8 +185,7 @@ def prep_dataloader(batch_size, data_root='./food-11/'):
     # Please think about what kind of augmentation is helpful for food recognition.
     train_tfm = transforms.Compose([
         # Resize the image into a fixed shape (height = width = 128)
-        transforms.Resize((256, 256)),
-        transforms.CenterCrop(224),#从中心开始裁剪
+        transforms.Resize((224, 224)),
         transforms.RandomHorizontalFlip(p=0.5),   #随机水平翻转 选择一个概率
         transforms.RandomRotation(45),            #随机旋转，-45到45度之间随机选
         transforms.ColorJitter(brightness=0.2, contrast=0.1, saturation=0.1, hue=0.1),#参数1为亮度，参数2为对比度，参数3为饱和度，参数4为色相
@@ -232,8 +199,7 @@ def prep_dataloader(batch_size, data_root='./food-11/'):
     # We don't need augmentations in testing and validation.
     # All we need here is to resize the PIL image and transform it into Tensor.
     test_tfm = transforms.Compose([
-        transforms.Resize((256, 256)),
-        transforms.CenterCrop(224),#从中心开始裁剪
+        transforms.Resize((224, 224)),
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])#均值，标准差
     ])
@@ -250,24 +216,15 @@ def prep_dataloader(batch_size, data_root='./food-11/'):
     test_set = DatasetFolder(test_set_path, loader=lambda x: Image.open(x), extensions="jpg", transform=test_tfm)
 
     # Construct data loaders.
-    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=5, pin_memory=True)
-    valid_loader = DataLoader(valid_set, batch_size=batch_size, shuffle=True, num_workers=5, pin_memory=True)
+    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=2, pin_memory=True)
+    valid_loader = DataLoader(valid_set, batch_size=batch_size, shuffle=True, num_workers=2, pin_memory=True)
     test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False)
-
-
-    # dataiter = iter(train_loader)
-    # inputs, classes = dataiter.next()
-    # print("train inputs")
-    # print(inputs)
-    # print("train class")
-    # print(classes)
-
 
     return train_loader, valid_loader, test_loader, train_set, valid_set, unlabeled_set, test_set
 
 #check device
 def get_device():
-    return 'cuda' if torch.cuda.is_available() else 'cpu'
+  return 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # The function "get_pseudo_labels" is used for semi-supervised learning.
 def get_pseudo_labels(dataset, model, threshold=0.65):
@@ -281,9 +238,8 @@ def get_pseudo_labels(dataset, model, threshold=0.65):
     # Define softmax function.
     softmax = nn.Softmax(dim=-1)
 
-    dataloader = DataLoader(dataset, batch_size=config['batch_size'], shuffle=False, num_workers=5, pin_memory=True)
+    dataloader = DataLoader(dataset, batch_size=config['batch_size'], shuffle=True, num_workers=2, pin_memory=True)
 
-    imgs = []
     labels = []
     # Iterate over the dataset by batches.
     for batch in tqdm(dataloader):
@@ -299,23 +255,12 @@ def get_pseudo_labels(dataset, model, threshold=0.65):
 
         # ---------- TODO ----------
         # Filter the data and construct a new dataset.
-        tem_label = []
         datalabel = probs.argmax(dim=-1)
-        imgs.extend(img)
         labels.extend(datalabel.cpu().numpy().tolist())
 
-    SemiData = UlabelDataset(imgs, labels)
-    dataset = SemiData
 
-    # dataloader2 = DataLoader(SemiData, batch_size=2, shuffle=False, num_workers=3, pin_memory=True)
-    # dataiter = iter(dataloader2)
-    # inputs, classes = dataiter.next()
-    # print("inputs")
-    # print(inputs)
-    # print("class")
-    # print(classes)
-
-    # Turn off the eval mode.
+    # dataset = ConcatDataset([dataset, labels])
+    # # Turn off the eval mode.
     model.train()
     return dataset
 
@@ -324,8 +269,8 @@ def train_data(train_loader, valid_loader, train_set, unlabeled_set, model_path,
     # "cuda" only when GPUs are available.
     device = device
 
-    # use resnet18
-    model, inputs = initialize_model(num_classes=11)
+    # use pretarin resnet18
+    model, inputs = initialize_model('resnet', 11, False, True)
 
     # Initialize a model, and put it on the device specified.
     model = model.to(device)
@@ -336,12 +281,6 @@ def train_data(train_loader, valid_loader, train_set, unlabeled_set, model_path,
 
     # Initialize optimizer, you may fine-tune some hyperparameters such as learning rate on your own.
     optimizer = torch.optim.Adam(model.parameters(), lr = learning_rate, weight_decay=weight_decay)
-
-    # learning rate schedule
-    # scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=10, verbose=True, threshold=0.0001, threshold_mode='rel', cooldown=0, min_lr=0, eps=1e-08)
-    # warm_up_with_cosine_lr
-    warm_up_with_cosine_lr = lambda epoch: epoch / config['warm_up_epochs'] if epoch <= config['warm_up_epochs'] else 0.5 * ( math.cos((epoch - config['warm_up_epochs']) /(num_epoch - config['warm_up_epochs']) * math.pi) + 1)
-    scheduler = torch.optim.lr_scheduler.LambdaLR( optimizer, lr_lambda=warm_up_with_cosine_lr)
 
     # The number of training epochs.
     n_epochs = num_epoch
@@ -354,15 +293,15 @@ def train_data(train_loader, valid_loader, train_set, unlabeled_set, model_path,
         # ---------- TODO ----------
         # In each epoch, relabel the unlabeled dataset for semi-supervised learning.
         # Then you can combine the labeled dataset and pseudo-labeled dataset for the training.
-        if do_semi and epoch > config['above_epoch']:
+        if do_semi:
             # Obtain pseudo-labels for unlabeled data using trained model.
             pseudo_set = get_pseudo_labels(unlabeled_set, model)
 
             # Construct a new dataset and a data loader for training.
             # This is used in semi-supervised learning only.
             concat_dataset = ConcatDataset([train_set, pseudo_set])
-            train_loader = DataLoader(concat_dataset, batch_size=batch_size, shuffle=True, num_workers=5, pin_memory=True)
-
+            train_loader = DataLoader(concat_dataset, batch_size=batch_size, shuffle=True, num_workers=2, pin_memory=True)
+        
         # ---------- Training ----------
         # Make sure the model is in train mode before training.
         model.train()    
@@ -409,9 +348,6 @@ def train_data(train_loader, valid_loader, train_set, unlabeled_set, model_path,
         # Print the information.
         print(f"[ Train | {epoch + 1:03d}/{n_epochs:03d} ] loss = {train_loss:.5f}, acc = {train_acc:.5f}")
 
-        writer.add_scalar("Acc/train", train_acc, epoch)
-        writer.add_scalar("Loss/train", train_loss, epoch)
-
         # ---------- Validation ----------
         # Make sure the model is in eval mode so that some modules like dropout are disabled and work normally.
         model.eval()
@@ -445,32 +381,19 @@ def train_data(train_loader, valid_loader, train_set, unlabeled_set, model_path,
         # Print the information.
         print(f"[ Valid | {epoch + 1:03d}/{n_epochs:03d} ] loss = {valid_loss:.5f}, acc = {valid_acc:.5f}")
         
-        writer.add_scalar("Loss/Val", valid_loss, epoch)
-        writer.add_scalar("Acc/Val", valid_acc, epoch)
-
-        # learning rate decay and print 
-        scheduler.step()
-        realLearningRate = scheduler.get_last_lr()[0]
-        print(f"[ Valid | {epoch + 1:03d}/{n_epochs:03d} ] real learning rate = {realLearningRate:.5f}")
-        # realLearningRate = optimizer.state_dict()['param_groups'][0]['lr']
-        writer.add_scalar("LearningRate", realLearningRate, epoch)
-
         # if the model improves, save a checkpoint at this epoch
         if valid_acc > best_acc:
             best_acc = valid_acc
             torch.save(model.state_dict(), model_path)
-
             print('saving model with acc {:.3f}'.format(best_acc))
-        
-    writer.flush()
-    writer.close()
 
 def predict_data(test_loader, model_path, device):
 
-    # use resnet18
-    model, inputs = initialize_model(num_classes=11)
+    # use pretarin resnet18
+    model, inputs = initialize_model('resnet', 11, False, False)
 
     # create model and load weights from checkpoint
+    # model = Classifier().to(device)
     model = model.to(device)
     model.load_state_dict(torch.load(model_path))
 
@@ -500,7 +423,7 @@ def predict_data(test_loader, model_path, device):
         predictions.extend(logits.argmax(dim=-1).cpu().numpy().tolist())
 
     # Save predictions into the file.
-    with open(saveFileName, "w") as f:
+    with open("ppredict.csv", "w") as f:
 
         # The first row must be "Id, Category"
         f.write("Id,Category\n")

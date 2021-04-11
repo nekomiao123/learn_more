@@ -29,7 +29,7 @@ import gc
 import torch
 import torch.nn as nn
 # Specify the graphics card
-torch.cuda.set_device(7)
+torch.cuda.set_device(6)
 # log file
 from loguru import logger
 logger.add('train.log')
@@ -40,10 +40,10 @@ writer = SummaryWriter()
 # hyper-parameters 
 config = {
     'learning_rate': 0.0001,       # learning rate
-    'batch_size': 64,
-    'num_epoch': 2,
+    'batch_size': 256,
+    'num_epoch': 200,
     'val_ratio': 0.2,       
-    'model_path': './test_model/model.ckpt'
+    'model_path': './train_model/model.ckpt'
 }
 
 ## Create Dataset
@@ -70,27 +70,42 @@ class Classifier(nn.Module):
     def __init__(self):
         super(Classifier, self).__init__()
         self.net = nn.Sequential(
-            nn.Linear(429, 1024),
+            nn.BatchNorm1d(429),
+            nn.Linear(429, 4096),
+            nn.BatchNorm1d(4096),
             nn.Dropout(0.5),
             nn.ReLU(),
-            nn.Linear(1024, 2048),
+
+            nn.Linear(4096, 2048),
+            nn.BatchNorm1d(2048),
             nn.Dropout(0.5),
             nn.ReLU(),
+
             nn.Linear(2048, 1024),
+            nn.BatchNorm1d(1024),
             nn.Dropout(0.5),
             nn.ReLU(),
-            nn.Linear(1024, 1024),
-            nn.Dropout(0.5),
-            nn.ReLU(),
-            nn.Linear(1024, 1024),
-            nn.Dropout(0.5),
-            nn.ReLU(),
+
             nn.Linear(1024, 512),
+            nn.BatchNorm1d(512),
             nn.Dropout(0.5),
             nn.ReLU(),
-            nn.Linear(512, 128),
-            nn.Dropout(0.25),
+
+            nn.Linear(512, 1024),
+            nn.BatchNorm1d(1024),
+            nn.Dropout(0.5),
             nn.ReLU(),
+
+            nn.Linear(1024, 512),
+            nn.BatchNorm1d(512),
+            nn.Dropout(0.5),
+            nn.ReLU(),
+
+            nn.Linear(512, 128),
+            nn.BatchNorm1d(128),
+            nn.Dropout(0.5),
+            nn.ReLU(),
+
             nn.Linear(128, 39)
         )
 
@@ -168,7 +183,7 @@ def train_data(train_loader, val_loader, train_set, val_set, config, device):
         for i, data in enumerate(train_loader):
             inputs, labels = data
             inputs, labels = inputs.to(device), labels.to(device)
-            
+
             optimizer.zero_grad() 
             outputs = model(inputs) 
             batch_loss = criterion(outputs, labels)
@@ -248,7 +263,7 @@ def predict_data(test_loader, device):
         for i, y in enumerate(predict):
             f.write('{},{}\n'.format(i, y))
         
-    logger.debug("prediec done!!!")
+    logger.debug("prediect done!!!")
 
 def main():
     # get device 
