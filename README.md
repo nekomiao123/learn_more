@@ -19,6 +19,8 @@ about deep learning
 
 ### course
 
+- [CMU Introduction to Deep Learning](http://deeplearning.cs.cmu.edu/F20/index.html)
+
 - [Introduction to Deep Learning](http://introtodeeplearning.com)
 - [李宏毅ML2021](https://speech.ee.ntu.edu.tw/~hylee/ml/2021-spring.html)
 - [李宏毅ML2020 内容非常多](https://speech.ee.ntu.edu.tw/~hylee/ml/2020-spring.html)
