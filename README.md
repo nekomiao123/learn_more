@@ -19,6 +19,8 @@ about deep learning
 
 ### course
 
+- [MIT 6.S897 Machine Learning for Healthcare, Spring 2019](https://www.youtube.com/watch?v=vof7x8r_ZUA&list=PLUl4u3cNGP60B0PQXVQyGNdCyCTDU1Q5j)
+
 - [CMU Introduction to Deep Learning](http://deeplearning.cs.cmu.edu/F20/index.html)
 
 - [Introduction to Deep Learning](http://introtodeeplearning.com)
