@@ -9,6 +9,11 @@ import numpy as np
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import os
 import csv
+# use this to record my loss
+import wandb
+
+# Specify the graphics card
+torch.cuda.set_device(3)
 
 train_path = 'train.csv'                # path to training data
 test_path = 'test.csv'                  # path to testing data
@@ -20,17 +25,27 @@ def get_device():
 device = get_device()
 
 config = {
-    'n_epochs': 500,                 # maximum number of epochs
-    'batch_size': 64,                # mini-batch size for dataloader
+    'n_epochs': 3000,                # maximum number of epochs
+    'batch_size': 32,                # mini-batch size for dataloader
     'optimizer': 'Adam',             # optimization algorithm (optimizer in torch.optim)
     'optim_hparas': {                # hyper-parameters for the optimizer (depends on which optimizer you are using)
-        'lr': 0.01,                # learning rate of Adam
+        'lr': 0.0003,                # learning rate of Adam
         'weight_decay': 0.001        # weight decay 
     },
-    'early_stop': 100,               # early stopping epochs (the number epochs since your model's last improvement)
-    'save_path': 'models/model.pth'  # your model will be saved here
+    'early_stop': 200,               # early stopping epochs (the number epochs since your model's last improvement)
+    'save_path': 'model.pth'         # your model will be saved here
 }
 
+default_config = dict(
+    batch_size=config['batch_size'],
+    n_epochs=config['n_epochs'],
+    optimizer=config['optimizer'],
+    optim_hparas=config['optim_hparas'],
+    early_stop=config['early_stop']
+)
+
+# 初始化该run
+wandb.init(project='chp', entity='nekokiku', config=default_config)
 
 class HousePriceDataset(Dataset):
     def __init__(self, path, mode='train'):
@@ -65,9 +80,9 @@ class HousePriceDataset(Dataset):
 
             # Splitting training data into train & dev sets 9:1
             if mode == 'train':
-                indices = [i for i in range(len(data)) if i % 10 != 0]
+                indices = [i for i in range(len(data)) if i % 10 != 1]
             elif mode == 'dev':
-                indices = [i for i in range(len(data)) if i % 10 == 0]
+                indices = [i for i in range(len(data)) if i % 10 == 1]
 
             # Convert data into PyTorch tensors
             self.data = torch.FloatTensor(data[indices])
@@ -104,13 +119,15 @@ def prep_dataloader(path, mode, batch_size, n_jobs=2):
 class NeuralNet(nn.Module):
     def __init__(self, input_dim):
         super(NeuralNet, self).__init__()
-
         # Define your neural network here
-        # TODO: How to modify this model to achieve better performance?
         self.net = nn.Sequential(
             nn.Linear(input_dim, 32),
             nn.ReLU(),
-            nn.Linear(32, 1)
+            nn.Linear(32, 16),
+            nn.ReLU(),
+            nn.Linear(16, 8),
+            nn.ReLU(),
+            nn.Linear(8, 1)
         )
         # Mean squared error loss
         self.criterion = nn.MSELoss(reduction='mean')
@@ -120,22 +137,17 @@ class NeuralNet(nn.Module):
         return self.net(x)
 
     def cal_loss(self, pred, target):   
-        ''' Calculate loss log rmse'''
+        ''' Calculate loss rmse'''
         eps = 1e-6
-        # clipped_preds = torch.clamp(pred, 1, float('inf'))
-        # loss = self.criterion(torch.log(clipped_preds), torch.log(target))
-
         loss = self.criterion(pred, target)
         newloss = torch.sqrt(loss + eps)
         return newloss
-
 
 def log_rmse(preds, labels):
     loss = nn.MSELoss()
     clipped_preds = torch.clamp(preds, 1, float('inf'))
     rmse = torch.sqrt(loss(torch.log(clipped_preds), torch.log(labels)))
     return rmse.item()
-
 
 def train(train_loader, dev_loader, config, device):
 
@@ -148,12 +160,12 @@ def train(train_loader, dev_loader, config, device):
     # Setup optimizer
     optimizer = getattr(torch.optim, config['optimizer'])(
         model.parameters(), **config['optim_hparas'])
-
+    wandb.watch(model)
     min_mse = 1000.
-    
+
     early_stop_cnt = 0
     epoch = 0
-    
+
     while epoch < n_epochs:
         train_loss = []
         dev_loss = []
@@ -184,6 +196,8 @@ def train(train_loader, dev_loader, config, device):
 
         val_total_loss = sum(dev_loss) / len(dev_loss)
 
+        # wandb
+        wandb.log({'epoch': epoch + 1, 'train_loss': train_total_loss, 'val_loss': val_total_loss})  
         print(f"[ {epoch + 1:03d}/{n_epochs:03d} ] train_loss = {train_total_loss:.5f} val_loss = {val_total_loss:.5f}")
 
         if val_total_loss < min_mse:
@@ -203,10 +217,8 @@ def train(train_loader, dev_loader, config, device):
             break
 
     print('Finished training after {} epochs'.format(epoch))
-    return min_mse, train_loss, dev_loss
 
-
-def test_save(test_loader, file, device):
+def test_save(test_loader, file, device, test_data):
 
     in_features = test_loader.dataset.dim
     # create model and load weights from checkpoint
@@ -224,12 +236,9 @@ def test_save(test_loader, file, device):
 
     #  ''' Save predictions to specified file '''
     print('Saving results to {}'.format(file))
-    with open(file, 'w') as fp:
-        writer = csv.writer(fp)
-        writer.writerow(['Id', 'Sold Price'])
-        for i, p in enumerate(preds):
-            writer.writerow([i, p])
-
+    test_data['Sold Price'] = pd.Series(preds.reshape(1, -1)[0])
+    submission = pd.concat([test_data['Id'], test_data['Sold Price']], axis=1)
+    submission.to_csv(file, index=False)
 
 def main():
     batch_size = config['batch_size']
@@ -240,12 +249,13 @@ def main():
     print('loading trainning data complete')
 
     print('begin to train')
-    min_mse, train_loss, dev_loss = train(train_loader, dev_loader, config, device)
+    train(train_loader, dev_loader, config, device)
     print('trainning complete')
 
     print("testing")
+    test_data = pd.read_csv(test_path)
     test_loader = prep_dataloader(test_path, 'test', batch_size)
-    test_save(test_loader, 'pred.csv', device)
+    test_save(test_loader, 'pred.csv', device, test_data)
     print("testing complete")
 
 
