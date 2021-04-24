@@ -9,8 +9,10 @@ import numpy as np
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import os
 import csv
+import math
 # use this to record my loss
 import wandb
+
 
 # Specify the graphics card
 torch.cuda.set_device(3)
@@ -24,16 +26,18 @@ def get_device():
 
 device = get_device()
 
+train_name = 'warmup_and_feature41'
 config = {
-    'n_epochs': 3000,                # maximum number of epochs
+    'n_epochs': 1000,                # maximum number of epochs
     'batch_size': 32,                # mini-batch size for dataloader
     'optimizer': 'Adam',             # optimization algorithm (optimizer in torch.optim)
     'optim_hparas': {                # hyper-parameters for the optimizer (depends on which optimizer you are using)
-        'lr': 0.0003,                # learning rate of Adam
+        'lr': 0.001,                 # learning rate of Adam
         'weight_decay': 0.001        # weight decay 
     },
-    'early_stop': 200,               # early stopping epochs (the number epochs since your model's last improvement)
-    'save_path': 'model.pth'         # your model will be saved here
+    'early_stop': 500,                  # early stopping epochs (the number epochs since your model's last improvement)
+    'save_path': train_name + '_model.pth',        # your model will be saved here
+    'warm_up_epochs': 5
 }
 
 default_config = dict(
@@ -41,14 +45,15 @@ default_config = dict(
     n_epochs=config['n_epochs'],
     optimizer=config['optimizer'],
     optim_hparas=config['optim_hparas'],
-    early_stop=config['early_stop']
+    early_stop=config['early_stop'],
+    warm_up_epochs=config['warm_up_epochs']
 )
 
 # 初始化该run
-wandb.init(project='chp', entity='nekokiku', config=default_config)
+wandb.init(project='chp', entity='nekokiku', config=default_config, name=train_name)
 
 class HousePriceDataset(Dataset):
-    def __init__(self, path, mode='train'):
+    def __init__(self, path, mode='train', select_features=True):
         self.mode = mode
 
         train_data = pd.read_csv(train_path)
@@ -69,20 +74,27 @@ class HousePriceDataset(Dataset):
         # 只利用数值特征进行训练
         all_features = all_features[numeric_features[1:]] # 原本第一列是Id，去掉
 
+        if select_features:
+        # high correlation(Annual tax amount 15, Tax assessed value 14, Last Sold Price 17, Listed Price 16, Full bathrooms 4, Bathrooms 3)
+            feats = [14, 15, 16, 17, 4, 3]
+        else:
+            feats = list(range(all_features.shape[1]))
+
         # 从pandas格式中提取NumPy格式，并将其转换为张量表示
         n_train = train_data.shape[0]
+        new_features = all_features[:].values
         if mode == 'test':
-            self.data = torch.tensor(all_features[n_train:].values,
-                                    dtype=torch.float32)
+            self.data = torch.FloatTensor(new_features[n_train:,feats])
+
         else:
-            data = all_features[:n_train].values
+            data = new_features[:n_train,feats]
             labels = train_data['Sold Price'].values.reshape(-1, 1)
 
-            # Splitting training data into train & dev sets 9:1
+            # Splitting training data into train & dev sets 4:1
             if mode == 'train':
-                indices = [i for i in range(len(data)) if i % 10 != 1]
+                indices = [i for i in range(len(data)) if i % 5 != 0]
             elif mode == 'dev':
-                indices = [i for i in range(len(data)) if i % 10 == 1]
+                indices = [i for i in range(len(data)) if i % 5 == 0]
 
             # Convert data into PyTorch tensors
             self.data = torch.FloatTensor(data[indices])
@@ -160,9 +172,15 @@ def train(train_loader, dev_loader, config, device):
     # Setup optimizer
     optimizer = getattr(torch.optim, config['optimizer'])(
         model.parameters(), **config['optim_hparas'])
+
+    # learning rate schedule
+    # scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=100, verbose=True, threshold=0.0001, threshold_mode='rel', cooldown=0, min_lr=0, eps=1e-08)
+    # warm_up_with_cosine_lr
+    warm_up_with_cosine_lr = lambda epoch: epoch / config['warm_up_epochs'] if epoch <= config['warm_up_epochs'] else 0.5 * ( math.cos((epoch - config['warm_up_epochs']) /(n_epochs - config['warm_up_epochs']) * math.pi) + 1)
+    scheduler = torch.optim.lr_scheduler.LambdaLR( optimizer, lr_lambda=warm_up_with_cosine_lr)
+
     wandb.watch(model)
     min_mse = 1000.
-
     early_stop_cnt = 0
     epoch = 0
 
@@ -178,7 +196,7 @@ def train(train_loader, dev_loader, config, device):
             log_rmse_loss = model.cal_loss(pred, y)
             log_rmse_loss.backward()
             optimizer.step()
-            
+
             train_loss.append(log_rmse(pred, y))
 
         train_total_loss = sum(train_loss) / len(train_loss)
@@ -196,9 +214,19 @@ def train(train_loader, dev_loader, config, device):
 
         val_total_loss = sum(dev_loss) / len(dev_loss)
 
-        # wandb
-        wandb.log({'epoch': epoch + 1, 'train_loss': train_total_loss, 'val_loss': val_total_loss})  
         print(f"[ {epoch + 1:03d}/{n_epochs:03d} ] train_loss = {train_total_loss:.5f} val_loss = {val_total_loss:.5f}")
+
+        # learning rate decay and print 
+        # warm up
+        scheduler.step()
+        realLearningRate = scheduler.get_last_lr()[0]
+
+        # ReduceLROnPlateau
+        # scheduler.step(val_total_loss)
+        # realLearningRate = optimizer.state_dict()['param_groups'][0]['lr']
+
+        # wandb
+        wandb.log({'epoch': epoch + 1, 'train_loss': train_total_loss, 'val_loss': val_total_loss, 'learningRate':realLearningRate})
 
         if val_total_loss < min_mse:
             # Save model if your model improved
@@ -255,15 +283,9 @@ def main():
     print("testing")
     test_data = pd.read_csv(test_path)
     test_loader = prep_dataloader(test_path, 'test', batch_size)
-    test_save(test_loader, 'pred.csv', device, test_data)
+    test_save(test_loader, train_name + 'pred.csv', device, test_data)
     print("testing complete")
 
 
 if __name__ == '__main__':
     main()
-    
-
-
-    
-
-
