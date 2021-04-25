@@ -2,6 +2,8 @@
 
 ## basic
 
+reference:https://www.mdeditor.tw/pl/gzMu
+
 about math
 
 - [convex optimization](https://www.edx.org/course/convex-optimization)
@@ -82,6 +84,8 @@ about deep learning
 
 
 
+https://zhuanlan.zhihu.com/p/320063653
+
 ## 关于Berkeley的学习顺序
 
 [Berkeley EECS的大部分课程](https://inst.eecs.berkeley.edu//classes-eecs.html)
@@ -91,6 +95,8 @@ about deep learning
 
 
 参考 https://www.zhihu.com/question/23372616
+
+
 
 推荐学习顺序：Math 54 + EE 16A（仅线性代数部分，可以跳过电路）-> Math 110 + EE 16B + CS 70 -> CS 189 -> EECS 126 + EECS 127 -> CS 182
 
