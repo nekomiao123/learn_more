@@ -62,6 +62,26 @@ about deep learning
 
 - [CS 61B](https://sp21.datastructur.es/)
 
+
+
+# Competition
+
+## ML and DL
+
+- [kaggle](https://www.kaggle.com)
+
+
+
+## programming
+
+### if you want to join goole, these competions can be helpful
+
+- [Kick start](https://codingcompetitions.withgoogle.com/kickstart)
+- [Code Jam](https://codingcompetitions.withgoogle.com/codejam)
+- [hash code](https://codingcompetitions.withgoogle.com/hashcode/)
+
+
+
 ## 关于Berkeley的学习顺序
 
 [Berkeley EECS的大部分课程](https://inst.eecs.berkeley.edu//classes-eecs.html)
