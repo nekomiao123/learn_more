@@ -1,0 +1,32 @@
+method: bayes
+metric:
+  goal: minimize
+  name: val_loss
+  target: 0.13
+
+parameters:
+  batch_size:
+    distribution: int_uniform
+    max: 32
+    min: 2
+  early_stop:
+    distribution: int_uniform
+    max: 210
+    min: 200
+  n_epochs:
+    distribution: int_uniform
+    max: 500
+    min: 400
+  optim_lr:
+    distribution: uniform
+    max: 0.001
+    min: 0.0001
+  weight_decay:
+    distribution: uniform
+    max: 0.0015
+    min: 0.0005
+  warm_up_epochs:
+    distribution: int_uniform
+    max: 10
+    min: 5
+program: CHP_use.py

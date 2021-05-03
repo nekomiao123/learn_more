@@ -12,10 +12,10 @@ import csv
 import math
 # use this to record my loss
 import wandb
-
+import datetime
 
 # Specify the graphics card
-torch.cuda.set_device(3)
+torch.cuda.set_device(5)
 
 train_path = 'train.csv'                # path to training data
 test_path = 'test.csv'                  # path to testing data
@@ -26,31 +26,23 @@ def get_device():
 
 device = get_device()
 
-train_name = 'warmup_and_feature41'
-config = {
-    'n_epochs': 1000,                # maximum number of epochs
-    'batch_size': 32,                # mini-batch size for dataloader
-    'optimizer': 'Adam',             # optimization algorithm (optimizer in torch.optim)
-    'optim_hparas': {                # hyper-parameters for the optimizer (depends on which optimizer you are using)
-        'lr': 0.001,                 # learning rate of Adam
-        'weight_decay': 0.001        # weight decay 
-    },
-    'early_stop': 500,                  # early stopping epochs (the number epochs since your model's last improvement)
-    'save_path': train_name + '_model.pth',        # your model will be saved here
-    'warm_up_epochs': 5
-}
+nowTime = datetime.datetime.now().strftime('%m_%d_%H_%M_%S')  # 现在
+train_name = str(nowTime)
 
+# hyperparameter
 default_config = dict(
-    batch_size=config['batch_size'],
-    n_epochs=config['n_epochs'],
-    optimizer=config['optimizer'],
-    optim_hparas=config['optim_hparas'],
-    early_stop=config['early_stop'],
-    warm_up_epochs=config['warm_up_epochs']
+    batch_size=16,
+    n_epochs=500,
+    optim_lr=0.001,                 # learning rate of Adam
+    weight_decay=0.001,             # weight decay 
+    early_stop=200,
+    warm_up_epochs=5
 )
 
 # 初始化该run
 wandb.init(project='chp', entity='nekokiku', config=default_config, name=train_name)
+config = wandb.config
+save_path = train_name + '_model.pth'  # your model will be saved here
 
 class HousePriceDataset(Dataset):
     def __init__(self, path, mode='train', select_features=True):
@@ -90,11 +82,11 @@ class HousePriceDataset(Dataset):
             data = new_features[:n_train,feats]
             labels = train_data['Sold Price'].values.reshape(-1, 1)
 
-            # Splitting training data into train & dev sets 4:1
+            # Splitting training data into train & dev sets 9:1
             if mode == 'train':
-                indices = [i for i in range(len(data)) if i % 5 != 0]
+                indices = [i for i in range(len(data)) if i % 10 != 0]
             elif mode == 'dev':
-                indices = [i for i in range(len(data)) if i % 5 == 0]
+                indices = [i for i in range(len(data)) if i % 10 == 0]
 
             # Convert data into PyTorch tensors
             self.data = torch.FloatTensor(data[indices])
@@ -117,7 +109,6 @@ class HousePriceDataset(Dataset):
     def __len__(self):
         return len(self.data)
 
-
 def prep_dataloader(path, mode, batch_size, n_jobs=2):
     ''' Generates a dataset, then is put into a dataloader. '''
     dataset = HousePriceDataset(path, mode=mode)  # Construct dataset
@@ -126,7 +117,6 @@ def prep_dataloader(path, mode, batch_size, n_jobs=2):
         shuffle=(mode == 'train'), drop_last=False,
         num_workers=n_jobs, pin_memory=True)                            # Construct dataloader
     return dataloader
-
 
 class NeuralNet(nn.Module):
     def __init__(self, input_dim):
@@ -170,8 +160,7 @@ def train(train_loader, dev_loader, config, device):
     # Maximum number of epochs
     n_epochs = config['n_epochs']  
     # Setup optimizer
-    optimizer = getattr(torch.optim, config['optimizer'])(
-        model.parameters(), **config['optim_hparas'])
+    optimizer = torch.optim.Adam(model.parameters(), lr=config['optim_lr'], weight_decay=config['weight_decay'])
 
     # learning rate schedule
     # scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=100, verbose=True, threshold=0.0001, threshold_mode='rel', cooldown=0, min_lr=0, eps=1e-08)
@@ -233,7 +222,7 @@ def train(train_loader, dev_loader, config, device):
             min_mse = val_total_loss
             print('Saving model (epoch = {:4d}, loss = {:.4f})'
                 .format(epoch + 1, min_mse))
-            torch.save(model.state_dict(), config['save_path'])  # Save model to specified path
+            torch.save(model.state_dict(), save_path)  # Save model to specified path
             early_stop_cnt = 0
         else:
             early_stop_cnt += 1
@@ -251,7 +240,7 @@ def test_save(test_loader, file, device, test_data):
     in_features = test_loader.dataset.dim
     # create model and load weights from checkpoint
     model = NeuralNet(in_features).to(device)
-    model.load_state_dict(torch.load(config['save_path']))
+    model.load_state_dict(torch.load(save_path))
 
     model.eval()                                # set model to evalutation mode
     preds = []
@@ -285,7 +274,9 @@ def main():
     test_loader = prep_dataloader(test_path, 'test', batch_size)
     test_save(test_loader, train_name + 'pred.csv', device, test_data)
     print("testing complete")
-
+    # print(d_config)
 
 if __name__ == '__main__':
     main()
+
+
