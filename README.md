@@ -7,7 +7,7 @@ reference:https://www.mdeditor.tw/pl/gzMu
 about math
 
 - [convex optimization](https://www.edx.org/course/convex-optimization)
-- [linear algebra by 3Blue1Brown](https://www.bilibili.com/video/av6731067?p=1&share_medium=android&share_source=copy_link&bbid=PgppX2ZRaAtpWz9bJ1sninfoc&ts=1552297488727)
+- [linear algebra by 3Blue1Brown](https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab)
 - [linear algebra by Strang](https://ocw.mit.edu/resources/res-18-010-a-2020-vision-of-linear-algebra-spring-2020/videos/a-new-way-to-start-linear-algebra/)
 
 about deep learning
