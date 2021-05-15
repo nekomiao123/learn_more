@@ -1,5 +1,7 @@
 # learn more （ML and DL）
 
+[MIT](https://ocw.mit.edu/index.htm)
+
 ## basic
 
 reference:https://www.mdeditor.tw/pl/gzMu
@@ -9,6 +11,7 @@ about math
 - [convex optimization](https://www.edx.org/course/convex-optimization)
 - [linear algebra by 3Blue1Brown](https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab)
 - [linear algebra by Strang](https://ocw.mit.edu/resources/res-18-010-a-2020-vision-of-linear-algebra-spring-2020/videos/a-new-way-to-start-linear-algebra/)
+- [probability](https://www.edx.org/course/probability-the-science-of-uncertainty-and-data)
 
 about deep learning
 
