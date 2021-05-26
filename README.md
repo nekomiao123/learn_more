@@ -73,6 +73,8 @@ about deep learning
 
 - [kaggle](https://www.kaggle.com)
 - [kaggle solutions](https://farid.one/kaggle-solutions/)
+- [天池](https://tianchi.aliyun.com/competition/gameList/activeList)
+- 
 
 
 
@@ -83,6 +85,12 @@ about deep learning
 - [Kick start](https://codingcompetitions.withgoogle.com/kickstart)
 - [Code Jam](https://codingcompetitions.withgoogle.com/codejam)
 - [hash code](https://codingcompetitions.withgoogle.com/hashcode/)
+
+### leetcode guide
+
+- [LeetCode 刷题攻略](https://github.com/youngyangyang04/leetcode-master)
+
+
 
 
 
