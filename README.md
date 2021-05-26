@@ -12,6 +12,7 @@ about math
 - [linear algebra by 3Blue1Brown](https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab)
 - [linear algebra by Strang](https://ocw.mit.edu/resources/res-18-010-a-2020-vision-of-linear-algebra-spring-2020/videos/a-new-way-to-start-linear-algebra/)
 - [probability](https://www.edx.org/course/probability-the-science-of-uncertainty-and-data)
+- [Statistics](https://www.coursera.org/specializations/statistics-with-python)
 
 about deep learning
 
@@ -25,10 +26,8 @@ about deep learning
 ### course
 
 - [MIT 6.S897 Machine Learning for Healthcare, Spring 2019](https://www.youtube.com/watch?v=vof7x8r_ZUA&list=PLUl4u3cNGP60B0PQXVQyGNdCyCTDU1Q5j)
-
 - [CMU Introduction to Deep Learning](http://deeplearning.cs.cmu.edu/F20/index.html)
-
-- [Introduction to Deep Learning](http://introtodeeplearning.com)
+- [MIT Introduction to Deep Learning](http://introtodeeplearning.com)
 - [李宏毅ML2021](https://speech.ee.ntu.edu.tw/~hylee/ml/2021-spring.html)
 - [李宏毅ML2020 内容非常多](https://speech.ee.ntu.edu.tw/~hylee/ml/2020-spring.html)
 - [Berkeley full stack deep learning 2021](https://fullstackdeeplearning.com)
@@ -39,6 +38,7 @@ about deep learning
 - [NYU Deep Learning 2020](https://atcold.github.io/pytorch-Deep-Learning/zh/)
 - [NYU Deep Learning 2021 video](https://www.youtube.com/watch?v=EyKiYVwrdjE&list=PLLHTzKZzVU9e6xUfG10TkTWApKSZCzuBI&index=1)
 - [Stanford EE104 Introduction to Machine Learning](http://ee104.stanford.edu)
+- [EE 290 Hardware for Machine Learning 2021](https://inst.eecs.berkeley.edu/~ee290-2/sp21/)
 
 ### books
 
@@ -67,13 +67,12 @@ about deep learning
 
 - [CS 61B](https://sp21.datastructur.es/)
 
-
-
 # Competition
 
 ## ML and DL
 
 - [kaggle](https://www.kaggle.com)
+- [kaggle solutions](https://farid.one/kaggle-solutions/)
 
 
 
