@@ -22,7 +22,6 @@ import ttach as tta
 # accelerate
 # from apex import amp
 
-
 # Specify the graphics card
 torch.cuda.set_device(4)
 
@@ -44,11 +43,11 @@ train_path = 'leaves_data/train.csv'
 test_path = 'leaves_data/test.csv'
 # we already have the iamges floder in the csv file，so we don't need it here
 img_path = 'leaves_data/'
-train_name = 'effnetv2'
+train_name = 'tf_efficientnet_b5_ns'
 
 # hyperparameter
 default_config = dict(
-    batch_size=32,
+    batch_size=16,
     num_epoch=200,
     learning_rate=3e-4,             # learning rate of Adam
     weight_decay=0.001,             # weight decay 
@@ -297,7 +296,7 @@ def initialize_model(num_classes, model_name = config['model_name'], feature_ext
         """ efficientnetv2
         """
         print("using efficientnetv2")
-        model_ft = timm.create_model('efficientnetv2_rw_s', pretrained=True, num_classes=num_classes)
+        model_ft = timm.create_model('tf_efficientnet_b5_ns', pretrained=True, num_classes=num_classes)
 
     elif model_name == 'seresnext':
         """ seresnext-50
