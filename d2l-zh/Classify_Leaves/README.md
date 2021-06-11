@@ -16,6 +16,14 @@
 
 
 
+| num  | name                         | batch size | Parameters   | CV     | LB      |
+| :--: | :--------------------------- | :--------- | ------------ | ------ | ------- |
+|  1   | tf_efficientnetv2_s_in21ft1k | 64         | 21.5 Million | 0.9747 | 0.97659 |
+|  2   | efficientnet_b3a             | 64         | 12 Million   | 0.9760 | 0.97613 |
+|  3   | seresnext50_32x4d            | 64         | 28 Million   | 0.9758 | 0.97750 |
+
+
+
 ## Ensemble 
 
 | nums  | Public Score |

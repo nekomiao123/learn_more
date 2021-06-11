@@ -2,9 +2,9 @@ import csv
 import itertools
 import random
 
-model1 = csv.reader(open('result/aug-seresnext-50_pred.csv', 'r'), delimiter=',')
-model2 = csv.reader(open('result/efficientnet_b3a_pred.csv', 'r'), delimiter=',')
-model3 = csv.reader(open('result/effnetv2_pred.csv', 'r'), delimiter=',')
+model1 = csv.reader(open('result/AdamW_seresnext50_32x4d_pred.csv', 'r'), delimiter=',')
+model2 = csv.reader(open('result/AdamW_efficientnet_b3a_pred.csv', 'r'), delimiter=',')
+model3 = csv.reader(open('result/AdamW_tf_efficientnetv2_s_in21ft1k_pred.csv', 'r'), delimiter=',')
 
 ensemble = []
 
