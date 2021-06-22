@@ -2,6 +2,8 @@
 
 [MIT](https://ocw.mit.edu/index.htm)
 
+https://conanhujinming.github.io/comments-for-awesome-courses/
+
 ## basic
 
 reference:https://www.mdeditor.tw/pl/gzMu
