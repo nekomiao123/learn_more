@@ -11,6 +11,8 @@ import torch.optim as optim
 import torchvision.transforms as transforms
 from torchvision.datasets import ImageFolder
 from torch.utils.data import DataLoader
+from torch.utils.data import Dataset
+from torch.utils.data import ConcatDataset, DataLoader, Subset
 
 import pandas as pd
 import math
@@ -28,16 +30,17 @@ torch.cuda.set_device(1)
 
 train_path = 'real_or_drawing/train_data'
 test_path = 'real_or_drawing/test_data'
-
-train_name = '2k_strong_newlamb'
+train_name = '2k_strong_semi'
 
 # hyperparameter
 default_config = dict(
     train_batch=32,
     test_batch=128,
-    num_epochs=2000,
+    num_epochs=10,
     learning_rate=1e-3,
     lamb = 0.0,
+    do_semi = False,
+    above_epoch = 3,
 
     early_stop=200,
     warm_up_epochs=5
@@ -46,7 +49,6 @@ default_config = dict(
 # Initialize 
 wandb.init(project='hw11', entity='nekokiku', config=default_config, name=train_name)
 config = wandb.config
-
 
 
 def data_process(train_batch, test_batch):
@@ -67,6 +69,7 @@ def data_process(train_batch, test_batch):
         # Transform to tensor for model inputs.
         transforms.ToTensor(),
     ])
+
     target_transform = transforms.Compose([
         # Turn RGB to grayscale.
         transforms.Grayscale(),
@@ -85,9 +88,9 @@ def data_process(train_batch, test_batch):
     source_dataset = ImageFolder(train_path, transform=source_transform)
     target_dataset = ImageFolder(test_path, transform=target_transform)
 
-    source_dataloader = DataLoader(source_dataset, batch_size=train_batch, shuffle=True)
-    target_dataloader = DataLoader(target_dataset, batch_size=train_batch, shuffle=True)
-    test_dataloader = DataLoader(target_dataset, batch_size=test_batch, shuffle=False)
+    source_dataloader = DataLoader(source_dataset, batch_size=train_batch, num_workers=5, shuffle=True, pin_memory=True)
+    target_dataloader = DataLoader(target_dataset, batch_size=train_batch, num_workers=5, shuffle=True, pin_memory=True)
+    test_dataloader = DataLoader(target_dataset, batch_size=test_batch, num_workers=5, shuffle=False, pin_memory=True)
 
     return source_dataset, target_dataset, source_dataloader, target_dataloader, test_dataloader
 
@@ -180,7 +183,64 @@ class DomainClassifier(nn.Module):
         y = self.layer(h)
         return y
 
-def train(learning_rate, num_epochs,source_dataloader, target_dataloader, lamb):
+class SemiDataset(Dataset):
+    def __init__(self, data, label):
+        self.data = data
+        self.label = label
+        self.length = len(data)
+
+    def __getitem__(self, idx):
+        label = self.label[idx]
+        data = self.data[idx]
+        return data, label
+
+    def __len__(self):
+        return self.length
+
+
+def get_pseudo_labels(test_dataloader, threshold=0.6):
+
+    # load trained model
+    label_predictor_path = 'model/predictor_'+ train_name +'.pt'
+    feature_extractor_path = 'model/extractor_'+ train_name +'.pt'
+
+    label_predictor = LabelPredictor().cuda()
+    feature_extractor = FeatureExtractor().cuda()
+
+    label_predictor.load_state_dict(torch.load(label_predictor_path))
+    feature_extractor.load_state_dict(torch.load(feature_extractor_path))
+
+    label_predictor.eval()
+    feature_extractor.eval()
+
+    # Define softmax function.
+    softmax = nn.Softmax(dim=-1)
+
+    fake_imgs = []
+    fake_labels = []
+
+    for i, (test_data, _) in enumerate(test_dataloader):
+        # test_data is img
+        with torch.no_grad():
+            test_data = test_data.cuda()
+            feature = feature_extractor(test_data)
+            class_logits = label_predictor(feature)
+
+        probs = softmax(class_logits)
+        # Filter the data and construct a new dataset.
+        values, indices = torch.max(probs, dim = -1)
+        for j in range(len(indices)):
+            if values[j].item() >= threshold:
+                fake_imgs.append(test_data[j])
+                fake_labels.append(indices[j].item())
+
+    semi_data = SemiDataset(fake_imgs, fake_labels)
+
+    label_predictor.train()
+    feature_extractor.train()
+    return semi_data
+
+def train(learning_rate, num_epochs, source_dataset, source_dataloader, target_dataloader, test_dataloader, lamb, do_semi):
 
     '''
       Args:
@@ -214,6 +274,20 @@ def train(learning_rate, num_epochs,source_dataloader, target_dataloader, lamb):
         running_D_loss, running_F_loss = 0.0, 0.0
         total_hit, total_num = 0.0, 0.0
 
+        feature_extractor.train()
+        label_predictor.train()
+        domain_classifier.train()
+
+        # train pseudo label
+        if do_semi and epoch > config['above_epoch']:
+            print("using pseudo labelling")
+            pseudo_set = get_pseudo_labels(test_dataloader)
+            concat_dataset = ConcatDataset([source_dataset, pseudo_set])
+            concat_dataloader = DataLoader(concat_dataset, batch_size=config['train_batch'], shuffle=True, pin_memory=True)
+           
+
+
+        total_i = 0
         for i, ((source_data, source_label), (target_data, _)) in enumerate(zip(source_dataloader, target_dataloader)):
 
             source_data = source_data.cuda()
@@ -237,6 +311,8 @@ def train(learning_rate, num_epochs,source_dataloader, target_dataloader, lamb):
             loss.backward()
             optimizer_D.step()
 
+
+
             # Step 2 : train feature extractor and label classifier
             class_logits = label_predictor(feature[:source_data.shape[0]])
             domain_logits = domain_classifier(feature)
@@ -254,13 +330,14 @@ def train(learning_rate, num_epochs,source_dataloader, target_dataloader, lamb):
 
             total_hit += torch.sum(torch.argmax(class_logits, dim=1) == source_label).item()
             total_num += source_data.shape[0]
-            # print(i, end='\r')
+            print(i, end='\r')
+            total_i = i
 
         train_D_loss, train_F_loss, train_acc = running_D_loss / (i+1), running_F_loss / (i+1), total_hit / total_num
 
         torch.save(feature_extractor.state_dict(), 'model/extractor_{}.pt'.format(train_name))
         torch.save(label_predictor.state_dict(), 'model/predictor_{}.pt'.format(train_name))
-        print('epoch {:>3d}: train D loss: {:6.4f}, train F loss: {:6.4f}, acc {:6.4f}'.format(epoch, train_D_loss, train_F_loss, train_acc))
+        print('epoch {:>3d}: train D loss: {:6.4f}, train F loss: {:6.4f}, acc {:6.4f}, total_iteration {:>3d}'.format(epoch, train_D_loss, train_F_loss, train_acc, total_i))
 
         # wandb
         wandb.log({'epoch': epoch + 1, 'train_D_loss': train_D_loss, 'train_F_loss':train_F_loss, 'train_acc':train_acc, 'lambd':lambd})
@@ -304,11 +381,12 @@ def main():
     lamb = config['lamb']
     num_epochs = config['num_epochs']
     learning_rate = config['learning_rate']
+    do_semi = config['do_semi']
 
     print("loading data")
     source_dataset, target_dataset, source_dataloader, target_dataloader, test_dataloader = data_process(train_batch, test_batch)
     print("begin trainning")
-    train(learning_rate, num_epochs,source_dataloader, target_dataloader, lamb)
+    train(learning_rate, num_epochs, source_dataset, source_dataloader, target_dataloader, test_dataloader, lamb, do_semi)
     print("begin testing")
     predict(test_dataloader)
     print("Done!!!!!!")

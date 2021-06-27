@@ -26,7 +26,7 @@ import ttach as tta
 # from apex import amp
 
 # Specify the graphics card
-gpus = [4 ,5]
+gpus = [2, 3]
 torch.cuda.set_device('cuda:{}'.format(gpus[0]))
 
 #check device
@@ -47,7 +47,7 @@ train_path = 'leaves_data/train.csv'
 test_path = 'leaves_data/test.csv'
 # we already have the iamges floder in the csv file，so we don't need it here
 img_path = 'leaves_data/'
-train_name = 'nc_seresnext50_32x4d'
+train_name = 'LS_seresnext50_32x4d'
 
 # hyperparameter
 default_config = dict(
@@ -102,7 +102,7 @@ class LeavesData(Dataset):
         elif mode == 'test':
             self.test_image = np.asarray(self.data_info.iloc[1:, 0])
             self.image_arr = self.test_image
-            
+
         self.real_len = len(self.image_arr)
 
         print('Finished reading the {} set of Leaves Dataset ({} samples found)'
@@ -118,8 +118,7 @@ class LeavesData(Dataset):
         # transform
         if self.mode == 'train':
             transform = transforms.Compose([
-                transforms.Resize((256, 256)),
-                transforms.RandomCrop(224),
+                transforms.Resize((224, 224)),
                 transforms.RandomHorizontalFlip(p=0.5),   # Horizontal random flip
                 transforms.RandomVerticalFlip(p=0.5),     # Vertical random flip
                 transforms.RandomPerspective(p=0.5),
@@ -429,14 +428,14 @@ def train(train_loader, val_loader, num_epoch, learning_rate, weight_decay, mode
     n_epochs = num_epoch
     best_acc = 0.0
 
-    is_mixup = False
+    is_mixup = True
 
     for epoch in range(n_epochs):
 
-        if epoch > 170:
+        if epoch > 180:
             is_mixup = False
         else:
-            is_mixup = False
+            is_mixup = True
 
         # ---------- Training ----------
         # Make sure the model is in train mode before training.
