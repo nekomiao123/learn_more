@@ -1,12 +1,14 @@
 # learn more （ML and DL）
 
+## reference
+
+https://www.mdeditor.tw/pl/gzMu
+
 [MIT](https://ocw.mit.edu/index.htm)
 
 https://conanhujinming.github.io/comments-for-awesome-courses/
 
 ## basic
-
-reference:https://www.mdeditor.tw/pl/gzMu
 
 about math
 
@@ -27,8 +29,9 @@ about deep learning
 
 ### course
 
-- [MIT 6.S897 Machine Learning for Healthcare, Spring 2019](https://www.youtube.com/watch?v=vof7x8r_ZUA&list=PLUl4u3cNGP60B0PQXVQyGNdCyCTDU1Q5j)
 - [CMU Introduction to Deep Learning](http://deeplearning.cs.cmu.edu/F20/index.html)
+- [CMU Multimodal Machine Learning](https://cmu-multicomp-lab.github.io/mmml-course/fall2020/)
+- [MIT 6.S897 Machine Learning for Healthcare, Spring 2019](https://www.youtube.com/watch?v=vof7x8r_ZUA&list=PLUl4u3cNGP60B0PQXVQyGNdCyCTDU1Q5j)
 - [MIT Introduction to Deep Learning](http://introtodeeplearning.com)
 - [李宏毅ML2021](https://speech.ee.ntu.edu.tw/~hylee/ml/2021-spring.html)
 - [李宏毅ML2020 内容非常多](https://speech.ee.ntu.edu.tw/~hylee/ml/2020-spring.html)
@@ -76,9 +79,6 @@ about deep learning
 - [kaggle](https://www.kaggle.com)
 - [kaggle solutions](https://farid.one/kaggle-solutions/)
 - [天池](https://tianchi.aliyun.com/competition/gameList/activeList)
-- 
-
-
 
 ## programming
 
@@ -91,10 +91,6 @@ about deep learning
 ### leetcode guide
 
 - [LeetCode 刷题攻略](https://github.com/youngyangyang04/leetcode-master)
-
-
-
-
 
 https://zhuanlan.zhihu.com/p/320063653
 
