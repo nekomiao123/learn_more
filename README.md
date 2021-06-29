@@ -21,9 +21,12 @@ about math
 about deep learning
 
 - [南瓜书（西瓜书的详细公式推导）](https://github.com/datawhalechina/pumpkin-book)
-
 - [Deep Learning Specialization](https://www.deeplearning.ai/program/deep-learning-specialization/)
 - [Deep Learning Specialization notes](https://github.com/fengdu78/deeplearning_ai_books)
+
+useful tools
+
+- [MIT Missing Semester](https://missing.csail.mit.edu)
 
 ## advanced
 
