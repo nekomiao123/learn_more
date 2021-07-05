@@ -27,3 +27,9 @@ echo '$foo'
 - `!!` - Entire last command, including arguments. A common pattern is to execute a command only for it to fail due to missing permissions; you can quickly re-execute the command with sudo by doing `sudo !!`
 - `$_` - Last argument from the last command. If you are in an interactive shell, you can also quickly get this value by typing `Esc` followed by `.`
 
+
+
+using `find`, we can find by file name.
+
+Using `grep`, we can fing by code. 
+

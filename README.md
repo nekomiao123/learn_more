@@ -46,6 +46,8 @@ useful tools
 - [NYU Deep Learning 2020](https://atcold.github.io/pytorch-Deep-Learning/zh/)
 - [NYU Deep Learning 2021 video](https://www.youtube.com/watch?v=EyKiYVwrdjE&list=PLLHTzKZzVU9e6xUfG10TkTWApKSZCzuBI&index=1)
 - [Stanford EE104 Introduction to Machine Learning](http://ee104.stanford.edu)
+- [Stanford MLSys Seminar Series](https://mlsys.stanford.edu)
+- [Machine Learning Engineering for Production  (MLOps) Specialization](https://www.deeplearning.ai/program/machine-learning-engineering-for-production-mlops/)
 - [EE 290 Hardware for Machine Learning 2021](https://inst.eecs.berkeley.edu/~ee290-2/sp21/)
 
 ### books
