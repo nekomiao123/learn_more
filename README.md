@@ -49,10 +49,11 @@ useful tools
 - [Stanford MLSys Seminar Series](https://mlsys.stanford.edu)
 - [Machine Learning Engineering for Production  (MLOps) Specialization](https://www.deeplearning.ai/program/machine-learning-engineering-for-production-mlops/)
 - [EE 290 Hardware for Machine Learning 2021](https://inst.eecs.berkeley.edu/~ee290-2/sp21/)
+- [Stanford Practical Machine Learning(沐神新课)](https://c.d2l.ai/stanford-cs329p/#)
 
 ### books
 
-- [Dive into Deep Learning](https://d2l.ai/index.html) and [配套直播课](https://courses.d2l.ai/zh-v2/)
+- [Dive into Deep Learning](https://d2l.ai/index.html) and [配套直播课(已经完结)](https://courses.d2l.ai/zh-v2/)
 
 ## computer vision
 
