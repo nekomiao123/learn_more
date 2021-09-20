@@ -78,6 +78,10 @@ useful tools
 
 - [CS 61B](https://sp21.datastructur.es/)
 
+## Algorithms
+
+- [MIT 6.006 Introduction to Algorithms, Spring 2020](https://www.youtube.com/watch?v=ZA-tUyM_y7s&list=PLUl4u3cNGP63EdVPNLG3ToM6LaEUuStEY&index=2)
+
 # Competition
 
 ## ML and DL
