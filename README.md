@@ -50,6 +50,7 @@ useful tools
 - [Machine Learning Engineering for Production  (MLOps) Specialization](https://www.deeplearning.ai/program/machine-learning-engineering-for-production-mlops/)
 - [EE 290 Hardware for Machine Learning 2021](https://inst.eecs.berkeley.edu/~ee290-2/sp21/)
 - [Stanford Practical Machine Learning(沐神新课)](https://c.d2l.ai/stanford-cs329p/#)
+- [沐神读论文系列](https://space.bilibili.com/1567748478/channel/collectiondetail?sid=32744)
 
 ### books
 
