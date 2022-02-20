@@ -51,6 +51,8 @@ useful tools
 - [EE 290 Hardware for Machine Learning 2021](https://inst.eecs.berkeley.edu/~ee290-2/sp21/)
 - [Stanford Practical Machine Learning(沐神新课)](https://c.d2l.ai/stanford-cs329p/#)
 - [沐神读论文系列](https://space.bilibili.com/1567748478/channel/collectiondetail?sid=32744)
+- [CS 330: Deep Multi-Task and Meta Learning](https://cs330.stanford.edu/)
+- [CS 330 video](https://www.youtube.com/watch?v=z42FTu87Eh4&list=PLoROMvodv4rOxuwpC_raecBCd5Jf54lEa&index=3)
 
 ### books
 
