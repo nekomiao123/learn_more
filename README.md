@@ -8,6 +8,8 @@ https://www.mdeditor.tw/pl/gzMu
 
 https://conanhujinming.github.io/comments-for-awesome-courses/
 
+https://github.com/dair-ai/ML-YouTube-Courses
+
 ## basic
 
 about math
