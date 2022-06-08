@@ -53,6 +53,7 @@ useful tools
 - [沐神读论文系列](https://space.bilibili.com/1567748478/channel/collectiondetail?sid=32744)
 - [CS 330: Deep Multi-Task and Meta Learning](https://cs330.stanford.edu/)
 - [CS 330 video](https://www.youtube.com/watch?v=z42FTu87Eh4&list=PLoROMvodv4rOxuwpC_raecBCd5Jf54lEa&index=3)
+- [Introduction to Causal Inference](https://www.bradyneal.com/causal-inference-course)
 
 ### books
 
