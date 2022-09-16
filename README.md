@@ -56,6 +56,8 @@ useful tools
 - [CS 330: Deep Multi-Task and Meta Learning](https://cs330.stanford.edu/)
 - [CS 330 video](https://www.youtube.com/watch?v=z42FTu87Eh4&list=PLoROMvodv4rOxuwpC_raecBCd5Jf54lEa&index=3)
 - [Introduction to Causal Inference](https://www.bradyneal.com/causal-inference-course)
+- [Deep Learning Systems Algorithms and Implementation](https://dlsyscourse.org/)
+- [Machine Learning Compilation](https://www.bilibili.com/video/BV15v4y1g7EU?vd_source=0c1bfdd16fa1ca3b8f0c18714757f13f)
 
 ### books
 
