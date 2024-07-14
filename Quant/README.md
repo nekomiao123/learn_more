@@ -17,3 +17,5 @@
 [Framework for Futures](https://github.com/wondertrader/wondertrader)
 
 [Framework for Crypto](https://github.com/hummingbot/hummingbot)
+
+[CryptoCurrency eXchange Trading Library](https://github.com/ccxt/ccxt)
