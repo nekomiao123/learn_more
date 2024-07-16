@@ -19,3 +19,7 @@
 [Framework for Crypto](https://github.com/hummingbot/hummingbot)
 
 [CryptoCurrency eXchange Trading Library](https://github.com/ccxt/ccxt)
+
+## Resource
+
+[Awesome-systematic-trading](https://github.com/wangzhe3224/awesome-systematic-trading/tree/master)
